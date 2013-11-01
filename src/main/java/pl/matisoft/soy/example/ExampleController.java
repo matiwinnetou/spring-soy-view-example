@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -13,17 +14,18 @@ import java.util.Date;
 public class ExampleController {
 
 	@RequestMapping(value="/")
-	public ModelAndView openHomepage(final Model model) {
+	public ModelAndView openHomepage(final Model model, HttpSession httpSession) {
 		addServerTimeStringToModel(model);
 		model.addAttribute("words", Lists.newArrayList("hello", "world", "from", "spring", "controller!"));
 
-        return new ModelAndView("soy.example.index", model.asMap());
+        return new ModelAndView("soy:soy.example.index", model.asMap());
 	}
 
 	@RequestMapping(value="/server-time")
-	public String getServerTime(Model model) {
+	public String getServerTime(Model model, HttpSession httpSession) {
 		addServerTimeStringToModel(model);
-		return "soy.example.serverTime";
+
+		return "soy:soy.example.serverTime";
 	}
 
 	private void addServerTimeStringToModel(Model model) {

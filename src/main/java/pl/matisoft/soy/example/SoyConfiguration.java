@@ -1,20 +1,12 @@
 package pl.matisoft.soy.example;
 
-import java.util.Properties;
-
 import com.google.common.collect.Lists;
-import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.MediaType;
-import org.springframework.web.accept.ContentNegotiationManagerFactoryBean;
-import org.springframework.web.context.support.ServletContextResource;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
@@ -34,10 +26,11 @@ import pl.matisoft.soy.compile.DefaultTofuCompiler;
 import pl.matisoft.soy.compile.TofuCompiler;
 import pl.matisoft.soy.data.DefaultToSoyDataConverter;
 import pl.matisoft.soy.data.ToSoyDataConverter;
-import pl.matisoft.soy.global.DefaultGlobalModelResolver;
-import pl.matisoft.soy.global.GlobalModelResolver;
 import pl.matisoft.soy.global.compile.CompileTimeGlobalModelResolver;
 import pl.matisoft.soy.global.compile.EmptyCompileTimeGlobalModelResolver;
+import pl.matisoft.soy.global.runtime.DefaultGlobalModelResolver;
+import pl.matisoft.soy.global.runtime.GlobalModelResolver;
+import pl.matisoft.soy.global.runtime.resolvers.*;
 import pl.matisoft.soy.locale.EmptyLocaleProvider;
 import pl.matisoft.soy.locale.LocaleProvider;
 import pl.matisoft.soy.render.DefaultTemplateRenderer;
@@ -79,7 +72,33 @@ public class SoyConfiguration extends WebMvcConfigurerAdapter {
 
     @Bean
     public GlobalModelResolver globalModelResolver() {
-        return new DefaultGlobalModelResolver();
+        final DefaultGlobalModelResolver defaultGlobalModelResolver = new DefaultGlobalModelResolver();
+        defaultGlobalModelResolver.setResolvers(Lists.newArrayList(
+                new RequestParametersResolver(),
+                new RequestHeadersResolver(),
+                new CookieResolver(),
+                requestContextResolver(),
+                new HttpSessionResolver(),
+                webApplicationContextResolver(),
+                servletContextResolver()
+        ));
+
+        return defaultGlobalModelResolver;
+    }
+
+    @Bean
+    public ServletContextResolver servletContextResolver() {
+        return new ServletContextResolver();
+    }
+
+    @Bean
+    public WebApplicationContextResolver webApplicationContextResolver() {
+        return new WebApplicationContextResolver();
+    }
+
+    @Bean
+    public RequestContextResolver requestContextResolver() {
+        return new RequestContextResolver();
     }
 
     @Bean
@@ -117,7 +136,6 @@ public class SoyConfiguration extends WebMvcConfigurerAdapter {
     @Bean
     public ViewResolver viewResolver() throws Exception {
         final SoyTemplateViewResolver soyTemplateViewResolver = new SoyTemplateViewResolver();
-        soyTemplateViewResolver.setServletContext(context);
         soyTemplateViewResolver.setDebugOn(debugOn);
         soyTemplateViewResolver.setTemplateFilesResolver(templateFilesResolver());
         soyTemplateViewResolver.setTemplateRenderer(templateRenderer());
@@ -125,6 +143,10 @@ public class SoyConfiguration extends WebMvcConfigurerAdapter {
         soyTemplateViewResolver.setGlobalModelResolver(globalModelResolver());
         soyTemplateViewResolver.setLocaleProvider(localeProvider());
         soyTemplateViewResolver.setSoyMsgBundleResolver(soyMsgBundleResolver());
+        //soyTemplateViewResolver.setViewNames
+
+        //defaultTemplateFilesResolver.setTemplatesLocation(new ServletContextResource(context, "/WEB-INF/templates"));
+        //soyTemplateViewResolver.setSuffix(".soy");
 
         return soyTemplateViewResolver;
     }
