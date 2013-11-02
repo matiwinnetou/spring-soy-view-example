@@ -6,7 +6,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -14,7 +16,7 @@ import java.util.Date;
 public class ExampleController {
 
 	@RequestMapping(value="/")
-	public ModelAndView openHomepage(final Model model, HttpSession httpSession) {
+	public ModelAndView openHomepage(HttpServletRequest request, final Model model, HttpSession httpSession) throws IOException {
 		addServerTimeStringToModel(model);
 		model.addAttribute("words", Lists.newArrayList("hello", "world", "from", "spring", "controller!"));
 

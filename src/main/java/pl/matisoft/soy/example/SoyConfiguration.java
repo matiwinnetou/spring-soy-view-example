@@ -22,6 +22,8 @@ import pl.matisoft.soy.ajax.process.google.GoogleClosureOutputProcessor;
 import pl.matisoft.soy.ajax.url.DefaultTemplateUrlComposer;
 import pl.matisoft.soy.ajax.url.TemplateUrlComposer;
 import pl.matisoft.soy.bundle.EmptySoyMsgBundleResolver;
+import pl.matisoft.soy.holder.CompiledTemplatesHolder;
+import pl.matisoft.soy.holder.DefaultCompiledTemplatesHolder;
 import pl.matisoft.soy.compile.DefaultTofuCompiler;
 import pl.matisoft.soy.compile.TofuCompiler;
 import pl.matisoft.soy.data.DefaultToSoyDataConverter;
@@ -31,8 +33,8 @@ import pl.matisoft.soy.global.compile.EmptyCompileTimeGlobalModelResolver;
 import pl.matisoft.soy.global.runtime.DefaultGlobalModelResolver;
 import pl.matisoft.soy.global.runtime.GlobalModelResolver;
 import pl.matisoft.soy.global.runtime.resolvers.*;
-import pl.matisoft.soy.locale.EmptyLocaleProvider;
 import pl.matisoft.soy.locale.LocaleProvider;
+import pl.matisoft.soy.locale.SpringLocaleProvider;
 import pl.matisoft.soy.render.DefaultTemplateRenderer;
 import pl.matisoft.soy.render.TemplateRenderer;
 import pl.matisoft.soy.template.DefaultTemplateFilesResolver;
@@ -51,7 +53,7 @@ public class SoyConfiguration extends WebMvcConfigurerAdapter {
     @Autowired
     private javax.servlet.ServletContext context;
 
-    private boolean debugOn = true;
+    private boolean debugOn = false;
 
     @Bean
     public DefaultTemplateFilesResolver templateFilesResolver() throws Exception {
@@ -59,7 +61,6 @@ public class SoyConfiguration extends WebMvcConfigurerAdapter {
         defaultTemplateFilesResolver.setDebugOn(debugOn);
         defaultTemplateFilesResolver.setRecursive(true);
         defaultTemplateFilesResolver.setServletContext(context);
-        //defaultTemplateFilesResolver.setTemplatesLocation(new ServletContextResource(context, "/WEB-INF/templates"));
         defaultTemplateFilesResolver.afterPropertiesSet();
 
         return defaultTemplateFilesResolver;
@@ -103,7 +104,7 @@ public class SoyConfiguration extends WebMvcConfigurerAdapter {
 
     @Bean
     public LocaleProvider localeProvider() {
-        return new EmptyLocaleProvider();
+        return new SpringLocaleProvider();
     }
 
     @Bean
@@ -137,18 +138,23 @@ public class SoyConfiguration extends WebMvcConfigurerAdapter {
     public ViewResolver viewResolver() throws Exception {
         final SoyTemplateViewResolver soyTemplateViewResolver = new SoyTemplateViewResolver();
         soyTemplateViewResolver.setDebugOn(debugOn);
-        soyTemplateViewResolver.setTemplateFilesResolver(templateFilesResolver());
         soyTemplateViewResolver.setTemplateRenderer(templateRenderer());
-        soyTemplateViewResolver.setTofuCompiler(tofuCompiler());
         soyTemplateViewResolver.setGlobalModelResolver(globalModelResolver());
         soyTemplateViewResolver.setLocaleProvider(localeProvider());
         soyTemplateViewResolver.setSoyMsgBundleResolver(soyMsgBundleResolver());
-        //soyTemplateViewResolver.setViewNames
-
-        //defaultTemplateFilesResolver.setTemplatesLocation(new ServletContextResource(context, "/WEB-INF/templates"));
-        //soyTemplateViewResolver.setSuffix(".soy");
+        soyTemplateViewResolver.setCompiledTemplatesHolder(compiledTemplatesHolder());
 
         return soyTemplateViewResolver;
+    }
+
+    @Bean
+    public CompiledTemplatesHolder compiledTemplatesHolder() throws Exception {
+        final DefaultCompiledTemplatesHolder defaultCompiledTemplatesHolder = new DefaultCompiledTemplatesHolder();
+        defaultCompiledTemplatesHolder.setDebugOn(debugOn);
+        defaultCompiledTemplatesHolder.setTemplatesFileResolver(templateFilesResolver());
+        defaultCompiledTemplatesHolder.setTofuCompiler(tofuCompiler());
+
+        return defaultCompiledTemplatesHolder;
     }
 
     @Bean
@@ -200,10 +206,7 @@ public class SoyConfiguration extends WebMvcConfigurerAdapter {
 
     @Bean
     public AuthManager authManager() {
-        final ConfigurableAuthManager configurableAuthManager = new ConfigurableAuthManager();
-        configurableAuthManager.setAllowedTemplates(Lists.newArrayList("templates/client-words.soy", "templates/server-time.soy"));
-
-        return configurableAuthManager;
+        return new ConfigurableAuthManager(Lists.newArrayList("templates/client-words.soy", "templates/server-time.soy"));
     }
 
 }
