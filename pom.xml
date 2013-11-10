@@ -9,10 +9,10 @@
     <name>spring-soy-view-example</name>
 
     <properties>
-        <spring.version>3.2.3.RELEASE</spring.version>
+        <spring.version>3.2.4.RELEASE</spring.version>
         <junit.version>4.11</junit.version>
         <mockito.version>1.9.5</mockito.version>
-        <spring.soy.view.version>1.20.0</spring.soy.view.version>
+        <spring.soy.view.version>1.20.1-SNAPSHOT</spring.soy.view.version>
     </properties>
 
     <dependencies>
@@ -36,6 +36,18 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>pl.matisoft</groupId>
             <artifactId>spring-soy-view</artifactId>
             <version>${spring.soy.view.version}</version>
@@ -44,12 +56,6 @@
         <dependency>
             <groupId>pl.matisoft</groupId>
             <artifactId>spring-soy-view-ajax-compiler</artifactId>
-            <version>${spring.soy.view.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>pl.matisoft</groupId>
-            <artifactId>spring-soy-view-min-google</artifactId>
             <version>${spring.soy.view.version}</version>
         </dependency>
 
