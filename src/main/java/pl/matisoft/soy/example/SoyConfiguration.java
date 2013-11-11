@@ -13,8 +13,6 @@ import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
 import org.springframework.web.servlet.view.json.MappingJacksonJsonView;
 import pl.matisoft.soy.ajax.auth.AuthManager;
 import pl.matisoft.soy.ajax.auth.ConfigurableAuthManager;
-import pl.matisoft.soy.data.adjust.EmptyModelAdjuster;
-import pl.matisoft.soy.data.adjust.ModelAdjuster;
 
 /**
  * Created with IntelliJ IDEA.
@@ -35,12 +33,6 @@ public class SoyConfiguration extends WebMvcConfigurerAdapter {
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
         return new PropertySourcesPlaceholderConfigurer();
-    }
-
-    @Bean
-    @Primary
-    public static ModelAdjuster modelAdjuster() {
-        return new EmptyModelAdjuster();
     }
 
     @Bean
