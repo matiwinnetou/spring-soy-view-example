@@ -41,6 +41,9 @@ Released   : 20100801
 						<div style="clear: both;">&nbsp;</div>
 						<div class="entry">
 							{call .serverTime data="all" /}
+							<h4>Global Compile Time:</h4>
+                            {if test1} test1: {test1}<br>{/if}
+
 							<h4>Request Context:</h4>
                             {if $ij._request.context}{$ij._request.context}<br>{/if}
 
