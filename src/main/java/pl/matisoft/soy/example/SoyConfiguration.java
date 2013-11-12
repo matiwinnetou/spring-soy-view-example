@@ -14,6 +14,7 @@ import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
 import org.springframework.web.servlet.view.json.MappingJacksonJsonView;
 import pl.matisoft.soy.ajax.auth.AuthManager;
 import pl.matisoft.soy.ajax.auth.ConfigurableAuthManager;
+import pl.matisoft.soy.ajax.config.SpringSoyViewAjaxConfig;
 import pl.matisoft.soy.global.compile.CompileTimeGlobalModelResolver;
 import pl.matisoft.soy.global.compile.DefaultCompileTimeGlobalModelResolver;
 import pl.matisoft.soy.global.runtime.DefaultGlobalModelResolver;
@@ -27,7 +28,7 @@ import pl.matisoft.soy.global.runtime.resolvers.RuntimeDataResolver;
  * Time: 23:02
  */
 @Configuration
-@ImportResource({"classpath:spring-soy-view-ajax-config.xml"})
+@Import(SpringSoyViewAjaxConfig.class)
 @PropertySource("classpath:spring-soy-view-example.properties")
 @EnableWebMvc
 @ComponentScan(basePackages = {"pl.matisoft.soy.example"})
@@ -54,9 +55,9 @@ public class SoyConfiguration extends WebMvcConfigurerAdapter {
     public GlobalModelResolver globalModelResolver(final GlobalModelResolver resolver) {
         final DefaultGlobalModelResolver original = (DefaultGlobalModelResolver) resolver;
         return new DefaultGlobalModelResolver(original.getResolvers(),
-                        Lists.<RuntimeDataResolver>newArrayList(
-                                new ExampleRuntimeDataResolver()
-                        ));
+                Lists.<RuntimeDataResolver>newArrayList(
+                        new ExampleRuntimeDataResolver()
+                ));
     }
 
     @Bean
