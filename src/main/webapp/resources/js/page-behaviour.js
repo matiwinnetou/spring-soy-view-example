@@ -11,7 +11,7 @@ APP.pushNewWord = function() {
 $(document).ready(function() {
     $('#getServerTimeLink').click(function() {
         $.ajax({
-            url: "/spring-soy-view-example/app/server-time",
+            url: "/server-time",
             context: document.body,
             success: function(data) {
                 $('#serverTime').html(data);

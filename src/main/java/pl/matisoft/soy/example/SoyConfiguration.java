@@ -5,8 +5,7 @@ import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
 import org.springframework.web.servlet.view.json.MappingJacksonJsonView;
 import pl.matisoft.soy.ajax.config.SpringSoyViewAjaxConfig;
@@ -22,8 +21,12 @@ import pl.matisoft.soy.ajax.config.SpringSoyViewAjaxConfig;
 @PropertySource("classpath:spring-soy-view-example.properties")
 @EnableWebMvc
 @ComponentScan(basePackages = {"pl.matisoft.soy.example"})
-//http://www.aviransplace.com/2012/04/29/how-to-use-spring-java-config/
 public class SoyConfiguration extends WebMvcConfigurerAdapter {
+
+    @Override
+    public void addResourceHandlers(final ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
+    }
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
