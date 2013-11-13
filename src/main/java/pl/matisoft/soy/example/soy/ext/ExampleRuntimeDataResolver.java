@@ -1,4 +1,4 @@
-package pl.matisoft.soy.example;
+package pl.matisoft.soy.example.soy.ext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
