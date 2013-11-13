@@ -1,7 +1,5 @@
 package pl.matisoft.soy.example;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -15,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class ExampleController {
 
 	@RequestMapping(value="/")
-	public String openHomepage(HttpServletRequest request, final Model model, HttpSession httpSession) throws IOException {
+	public String openHomepage(final Model model) throws IOException {
         final MyModelObject myModelObject = new MyModelObject();
         myModelObject.setServerTime(serverTime());
         myModelObject.setWords(Lists.newArrayList("hello", "world", "from", "spring", "controller!"));
@@ -26,7 +24,7 @@ public class ExampleController {
 	}
 
 	@RequestMapping(value="/server-time")
-	public String getServerTime(Model model, HttpSession httpSession) {
+	public String getServerTime(final Model model) {
         final MyModelObject myModelObject = new MyModelObject();
         myModelObject.setServerTime(serverTime());
 

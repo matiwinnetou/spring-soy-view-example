@@ -7,7 +7,6 @@ import java.util.List;
  * User: mszczap
  * Date: 11.11.13
  * Time: 00:55
- * To change this template use File | Settings | File Templates.
  */
 public class MyModelObject {
 
