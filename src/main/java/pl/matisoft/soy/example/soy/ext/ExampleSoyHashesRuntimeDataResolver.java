@@ -5,12 +5,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
+import com.google.common.base.*;
 import com.google.common.collect.FluentIterable;
 import com.google.template.soy.data.SoyMapData;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,28 +43,45 @@ public class ExampleSoyHashesRuntimeDataResolver implements RuntimeDataResolver 
     }
 
     private List<URL> urls() {
-        return FluentIterable.from(SoyUrls.homePageUrls())
+        final List<String> templateNames = SoyUrls.homePageUrls();
+        final Map<String,Supplier<Optional<URL>>> cache = urlsCache(templateNames);
+
+        return FluentIterable.from(templateNames)
                 .filter(new Predicate<String>() {
                     @Override
                     public boolean apply(final String templateName) {
-                        return urlNoEx(templateName).isPresent();
+                        return cache.get(templateName).get().isPresent();
                     }
                 })
                 .transform(new Function<String, URL>() {
                     @Override
                     public URL apply(final String templateName) {
-                        return urlNoEx(templateName).get();
+                        return cache.get(templateName).get().get();
                     }
                 })
                 .toImmutableList();
     }
 
-    private Optional<URL> urlNoEx(final String templateName) {
-        try {
-            return templateFilesResolver.resolve(templateName);
-        } catch (final IOException e) {
-            throw new RuntimeException(e);
+    private Map<String,Supplier<Optional<URL>>> urlsCache(final List<String> templateNames) {
+        final HashMap cache = new HashMap<String,Supplier<Optional<URL>>>();
+        for (final String templateName : templateNames) {
+            final Supplier<Optional<URL>> memoize = Suppliers.memoize(new Supplier<Optional<URL>>() {
+
+                @Override
+                public Optional<URL> get() {
+                    try {
+                        return templateFilesResolver.resolve(templateName);
+                    } catch (final IOException e) {
+                        return Optional.absent();
+                    }
+                }
+
+            });
+
+            cache.put(templateName, memoize);
         }
+
+        return cache;
     }
 
     public void setHashFileGenerator(HashFileGenerator hashFileGenerator) {

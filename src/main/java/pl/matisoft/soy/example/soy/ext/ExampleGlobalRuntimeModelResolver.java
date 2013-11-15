@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
-import pl.matisoft.soy.global.runtime.DefaultGlobalModelResolver;
-import pl.matisoft.soy.global.runtime.GlobalModelResolver;
+import pl.matisoft.soy.global.runtime.DefaultGlobalRuntimeModelResolver;
+import pl.matisoft.soy.global.runtime.GlobalRuntimeModelResolver;
 import pl.matisoft.soy.global.runtime.resolvers.RuntimeDataResolver;
 
 /**
@@ -19,11 +19,11 @@ import pl.matisoft.soy.global.runtime.resolvers.RuntimeDataResolver;
  */
 @Component
 @Primary
-public class ExampleGlobalModelResolver extends DefaultGlobalModelResolver {
+public class ExampleGlobalRuntimeModelResolver extends DefaultGlobalRuntimeModelResolver {
 
     @Autowired
-    @Qualifier("soyGlobalModelResolver")
-    private GlobalModelResolver globalModelResolver;
+    @Qualifier("soyGlobalRuntimeModelResolver")
+    private GlobalRuntimeModelResolver globalModelResolver;
 
     @Autowired
     @Qualifier("soyHashesRuntimeDataResolver")
@@ -31,7 +31,7 @@ public class ExampleGlobalModelResolver extends DefaultGlobalModelResolver {
 
     @PostConstruct
     public void init() {
-        setResolvers(((DefaultGlobalModelResolver)globalModelResolver).getResolvers());
+        setResolvers(((DefaultGlobalRuntimeModelResolver)globalModelResolver).getResolvers());
         setUserResolvers(Lists.<RuntimeDataResolver>newArrayList(runtimeDataResolver));
     }
 

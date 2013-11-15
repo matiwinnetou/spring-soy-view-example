@@ -19,6 +19,10 @@ public class SoyUrls {
     private SoyUrls() {
     }
 
+    public static List<String> allUrls() {
+        return homePageUrls();
+    }
+
     public static List<String> homePageUrls() {
         return Lists.newArrayList(
                 CLIENT_WORDS_URL,
