@@ -9,7 +9,7 @@
     <name>spring-soy-view-example</name>
 
     <properties>
-        <spring.version>3.2.4.RELEASE</spring.version>
+        <spring.version>4.0.1.RELEASE</spring.version>
         <junit.version>4.11</junit.version>
         <mockito.version>1.9.5</mockito.version>
         <spring.soy.view.version>1.25.2-SNAPSHOT</spring.soy.view.version>
