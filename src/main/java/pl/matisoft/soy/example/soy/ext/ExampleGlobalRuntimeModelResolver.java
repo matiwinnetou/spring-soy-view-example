@@ -1,7 +1,5 @@
 package pl.matisoft.soy.example.soy.ext;
 
-import javax.annotation.PostConstruct;
-
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -10,6 +8,8 @@ import org.springframework.stereotype.Component;
 import pl.matisoft.soy.global.runtime.DefaultGlobalRuntimeModelResolver;
 import pl.matisoft.soy.global.runtime.GlobalRuntimeModelResolver;
 import pl.matisoft.soy.global.runtime.resolvers.RuntimeDataResolver;
+
+import javax.annotation.PostConstruct;
 
 /**
  * Created with IntelliJ IDEA.
@@ -31,8 +31,7 @@ public class ExampleGlobalRuntimeModelResolver extends DefaultGlobalRuntimeModel
 
     @PostConstruct
     public void init() {
-        setResolvers(((DefaultGlobalRuntimeModelResolver)globalModelResolver).getResolvers());
-        setUserResolvers(Lists.<RuntimeDataResolver>newArrayList(runtimeDataResolver));
+        setUserResolvers(Lists.newArrayList(runtimeDataResolver));
     }
 
 }
